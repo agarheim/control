@@ -3,13 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\PageBlog;
+use App\Form\BlogAddType;
 use App\Repository\PageBlogRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PagesController extends AbstractController
 {
+    /**
+     * @var  EntityManagerInterface
+     */
+    private $entityManager;
     /**
      * @Route("/", name="default")
      */
@@ -59,6 +65,25 @@ class PagesController extends AbstractController
 
         return $this->render('pages/edit.html.twig', [
             'blogs' => $blog,
+        ]);
+    }
+    /**
+     * @Route("/add/blog", name="add_blog")
+     */
+    public function addP (Request $request)
+    {
+        $blogs=new PageBlog();
+        $form= $this->createForm(BlogAddType::class, $blogs);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager = $this->getDoctrine()->getManager();
+            $this->entityManager->persist($blogs);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('blog');
+        }
+        return $this->render('pages/add.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }
