@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BlogController!{% endblock %}
+
+{% block body %}
+    <div><a href="{{ path('default') }}">на главную</a> </div>
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+    <div class="example-wrapper">
+        {% for blog in blogs %}
+
+            <div><h1>{{ blog.titlePage }}</h1><br> {{ blog.contentPage[:50]}}...<br><a href="{{ path('blogs', {'id':blog.id}) }}">Go-> {{ blog.datePub |date("m/d/Y")}}</a>
+            </div>
+        {% endfor %}
+    </div>
+{#    <div><a href="{{ path('add_blog') }}">add blog</a> </div>#}
+{% endblock %}
