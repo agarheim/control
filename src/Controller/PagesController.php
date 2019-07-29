@@ -7,8 +7,12 @@ use App\Form\BlogAddType;
 use App\Repository\PageBlogRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class PagesController extends AbstractController
 {
@@ -50,21 +54,30 @@ class PagesController extends AbstractController
      *
      */
     public function editing ( PageBlog $blog, Request $request, $id )
-    {    if($_POST) {
+    {
+       // $blogs= new PageBlog();
+        $form = $this->createFormBuilder($blog)
+            ->add('TitlePage', TextType::class)
+            ->add('ContentPage', TextareaType::class)
+            ->add('DatePub', DateType::class)
+            ->add('save', SubmitType::class, ['label' => 'Обновить'])
+            ->getForm();
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $page = $entityManager->getRepository(PageBlog::class)->find($id);
+         $entityManager = $this->getDoctrine()->getManager();
+     //   $page = $entityManager->getRepository(PageBlog::class)->find($id);
+        $form->handleRequest($request);
 
-        $page->setTitlePage($request->request->get('pagetitle'));
-        $page->setContentPage($request->request->get('contentpage'));
-      // $d= $request->request->get('datepub');
-      //  $page->setDatePub($page->getUpdated( $d));
-        $entityManager->flush();
+       if ($form->isSubmitted() && $form->isValid()) {
+//        $page->setTitlePage($request->request->get('pagetitle'));
+//        $page->setContentPage($request->request->get('contentpage'));
+//      // $d= $request->request->get('datepub');
+//      //  $page->setDatePub($page->getUpdated( $d));
+          $entityManager->flush();
         return $this->redirectToRoute('blog');
       }
 
         return $this->render('pages/edit.html.twig', [
-            'blogs' => $blog,
+            'form' =>$form->createView(),
         ]);
     }
     /**

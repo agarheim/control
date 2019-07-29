@@ -9,12 +9,8 @@
     </style>
 
     <div class="example-wrapper">
-     <form name="edit" method="post" action="{{ path('edit_p',{'id':blogs.id}) }}">
-         <p><input type="text" name="pagetitle" value="{{ blogs.titlePage }}"></p>
-         <p><textarea name="contentpage" >{{ blogs.contentPage }}</textarea></p>
-         <p><input type="date" name="datepub" value="{{ blogs.datePub|date("Y-m-d") }}"></p>
-{#         <p><input type="button" name="submit" value="Обновить"></p>#}
-         <p><button name="submit">ОТправить</button> </p>
-     </form>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
     </div>
 {% endblock %}
